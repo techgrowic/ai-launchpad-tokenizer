@@ -1,10 +1,11 @@
 
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft, Copy, Twitter, Globe } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import Navbar from '@/components/Navbar';
+import { ethers } from 'ethers';
 import { SwapWidget } from '@uniswap/widgets';
 // Import the fonts directly from node_modules
 import '@fontsource/ibm-plex-mono/400.css';
@@ -24,6 +25,14 @@ const AgentDetail = () => {
   const { symbol } = useParams();
   const [showTradeDialog, setShowTradeDialog] = useState(false);
   
+  // Create provider instance
+  const provider = useMemo(() => {
+    if (typeof window.ethereum !== 'undefined') {
+      return new ethers.providers.Web3Provider(window.ethereum);
+    }
+    return new ethers.providers.JsonRpcProvider('https://mainnet.infura.io/v3/your-infura-id');
+  }, []);
+
   // Mock data - in a real app, fetch this from an API
   const agentData = {
     name: 'AI.XBT',
@@ -45,7 +54,6 @@ const AgentDetail = () => {
 
   // Uniswap configuration
   const UNISWAP_TOKEN_LIST = 'https://gateway.ipfs.io/ipns/tokens.uniswap.org';
-  const jsonRpcEndpoint = 'https://mainnet.infura.io/v3/your-infura-id';
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
@@ -62,7 +70,7 @@ const AgentDetail = () => {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Left Column */}
           <div className="lg:col-span-2 space-y-6">
-            <div className="glass-card p-6">
+            <Card className="p-6">
               <div className="flex items-center gap-4 mb-6">
                 <div className="w-12 h-12 bg-gray-200 rounded-full"></div>
                 <div>
@@ -90,7 +98,7 @@ const AgentDetail = () => {
               </div>
 
               <p className="text-gray-600">{agentData.description}</p>
-            </div>
+            </Card>
 
             <Card className="p-6">
               <h2 className="text-xl font-semibold mb-4">Influence Metrics</h2>
@@ -153,15 +161,31 @@ const AgentDetail = () => {
                     <DialogHeader>
                       <DialogTitle>Trade {agentData.name}</DialogTitle>
                       <DialogDescription>
-                        Swap tokens using Uniswap v4
+                        Powered by OKX DEX
                       </DialogDescription>
                     </DialogHeader>
                     <div className="mt-4" style={{ height: '500px' }}>
                       <SwapWidget
                         tokenList={UNISWAP_TOKEN_LIST}
-                        provider={jsonRpcEndpoint}
+                        provider={provider}
                         defaultOutputTokenAddress={symbol}
+                        theme={{
+                          primary: '#000000',
+                          secondary: '#666666',
+                          interactive: '#EEEEEE',
+                          container: '#FFFFFF',
+                          module: '#FAFAFA',
+                          accent: '#000000',
+                          outline: '#EEEEEE',
+                          dialog: '#FFFFFF',
+                          fontFamily: 'Inter'
+                        }}
+                        className="!bg-background"
                       />
+                      <div className="text-xs text-gray-500 text-center mt-4">
+                        * You are about to use the services of third party operators over which OKX has no control. 
+                        OKX is not liable for any loss or other consequences, including the freezing / seizing of your assets.
+                      </div>
                     </div>
                   </DialogContent>
                 </Dialog>
