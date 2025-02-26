@@ -1,5 +1,6 @@
 
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { ChevronUp, ChevronDown } from 'lucide-react';
 
 interface Agent {
@@ -39,6 +40,14 @@ const agents: Agent[] = [
 ];
 
 export default function AgentTable() {
+  const navigate = useNavigate();
+
+  const handleRowClick = (symbol: string) => {
+    // Remove the $ from symbol for the URL
+    const cleanSymbol = symbol.replace('$', '');
+    navigate(`/agent/${cleanSymbol}`);
+  };
+
   return (
     <div className="glass-card p-6 animate-slideUp">
       <div className="flex justify-between items-center mb-6">
@@ -64,7 +73,11 @@ export default function AgentTable() {
           </thead>
           <tbody>
             {agents.map((agent) => (
-              <tr key={agent.symbol} className="border-b border-gray-100 hover:bg-gray-50">
+              <tr 
+                key={agent.symbol} 
+                className="border-b border-gray-100 hover:bg-gray-50 cursor-pointer"
+                onClick={() => handleRowClick(agent.symbol)}
+              >
                 <td className="table-cell">
                   <div className="flex items-center gap-3">
                     <div className="w-8 h-8 bg-gray-200 rounded-full"></div>
