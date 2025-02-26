@@ -1,9 +1,15 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Search, Plus, Wallet } from 'lucide-react';
 import { Button } from './ui/button';
 
 export default function Navbar() {
+  const [isWalletConnected, setIsWalletConnected] = useState(false);
+
+  const handleWalletConnect = () => {
+    setIsWalletConnected(true);
+  };
+
   return (
     <nav className="border-b border-gray-200 bg-white/50 backdrop-blur-sm sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -27,15 +33,30 @@ export default function Navbar() {
               />
             </div>
             
-            <Button variant="outline" className="flex items-center gap-2">
-              <Wallet className="h-4 w-4" />
-              Connect Wallet
-            </Button>
-
-            <Button className="flex items-center gap-2 bg-primary text-white hover:bg-primary/90">
-              <Plus className="h-4 w-4" />
-              Create New Agent
-            </Button>
+            {!isWalletConnected ? (
+              <Button 
+                variant="outline" 
+                className="flex items-center gap-2"
+                onClick={handleWalletConnect}
+              >
+                <Wallet className="h-4 w-4" />
+                Connect Wallet
+              </Button>
+            ) : (
+              <>
+                <Button 
+                  variant="outline" 
+                  className="flex items-center gap-2"
+                >
+                  <Wallet className="h-4 w-4" />
+                  Connected
+                </Button>
+                <Button className="flex items-center gap-2 bg-primary text-white hover:bg-primary/90">
+                  <Plus className="h-4 w-4" />
+                  Create New Agent
+                </Button>
+              </>
+            )}
           </div>
         </div>
       </div>
