@@ -1,13 +1,24 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft, Copy, Twitter, Globe } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import Navbar from '@/components/Navbar';
+import { SwapWidget } from '@uniswap/widgets';
+import '@uniswap/widgets/fonts.css';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 
 const AgentDetail = () => {
   const { symbol } = useParams();
+  const [showTradeDialog, setShowTradeDialog] = useState(false);
   
   // Mock data - in a real app, fetch this from an API
   const agentData = {
@@ -27,6 +38,10 @@ const AgentDetail = () => {
       smartFollowers: '5,542'
     }
   };
+
+  // Uniswap configuration
+  const UNISWAP_TOKEN_LIST = 'https://gateway.ipfs.io/ipns/tokens.uniswap.org';
+  const jsonRpcEndpoint = 'https://mainnet.infura.io/v3/your-infura-id';
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
@@ -126,7 +141,26 @@ const AgentDetail = () => {
                     <p className="text-lg font-medium">{agentData.volume24h}</p>
                   </div>
                 </div>
-                <Button className="w-full">Trade</Button>
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <Button className="w-full">Trade</Button>
+                  </DialogTrigger>
+                  <DialogContent className="sm:max-w-[425px]">
+                    <DialogHeader>
+                      <DialogTitle>Trade {agentData.name}</DialogTitle>
+                      <DialogDescription>
+                        Swap tokens using Uniswap v4
+                      </DialogDescription>
+                    </DialogHeader>
+                    <div className="mt-4" style={{ height: '500px' }}>
+                      <SwapWidget
+                        tokenList={UNISWAP_TOKEN_LIST}
+                        provider={jsonRpcEndpoint}
+                        defaultOutputTokenAddress={symbol}
+                      />
+                    </div>
+                  </DialogContent>
+                </Dialog>
               </div>
             </Card>
           </div>
