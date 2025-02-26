@@ -6,7 +6,11 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import Navbar from '@/components/Navbar';
 import { SwapWidget } from '@uniswap/widgets';
-import '@uniswap/widgets/fonts.css';
+// Import the fonts directly from node_modules
+import '@fontsource/ibm-plex-mono/400.css';
+import '@fontsource/inter/400.css';
+import '@fontsource/inter/500.css';
+import '@fontsource/inter/600.css';
 import {
   Dialog,
   DialogContent,
