@@ -1,17 +1,10 @@
 
-import React, { useState, useMemo } from 'react';
+import React, { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft, Copy, Twitter, Globe } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import Navbar from '@/components/Navbar';
-import { ethers } from 'ethers';
-import { SwapWidget } from '@uniswap/widgets';
-// Import the fonts directly from node_modules
-import '@fontsource/ibm-plex-mono/400.css';
-import '@fontsource/inter/400.css';
-import '@fontsource/inter/500.css';
-import '@fontsource/inter/600.css';
 import {
   Dialog,
   DialogContent,
@@ -25,14 +18,6 @@ const AgentDetail = () => {
   const { symbol } = useParams();
   const [showTradeDialog, setShowTradeDialog] = useState(false);
   
-  // Create provider instance with proper type checking
-  const provider = useMemo(() => {
-    if (typeof window !== 'undefined' && window.ethereum) {
-      return new ethers.providers.Web3Provider(window.ethereum);
-    }
-    return new ethers.providers.JsonRpcProvider('https://mainnet.infura.io/v3/your-infura-id');
-  }, []);
-
   // Mock data - in a real app, fetch this from an API
   const agentData = {
     name: 'AI.XBT',
@@ -51,9 +36,6 @@ const AgentDetail = () => {
       smartFollowers: '5,542'
     }
   };
-
-  // Uniswap configuration
-  const UNISWAP_TOKEN_LIST = 'https://gateway.ipfs.io/ipns/tokens.uniswap.org';
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
@@ -165,23 +147,6 @@ const AgentDetail = () => {
                       </DialogDescription>
                     </DialogHeader>
                     <div className="mt-4" style={{ height: '500px' }}>
-                      <SwapWidget
-                        tokenList={UNISWAP_TOKEN_LIST}
-                        provider={provider}
-                        defaultOutputTokenAddress={symbol}
-                        theme={{
-                          primary: '#000000',
-                          secondary: '#666666',
-                          interactive: '#EEEEEE',
-                          container: '#FFFFFF',
-                          module: '#FAFAFA',
-                          accent: '#000000',
-                          outline: '#EEEEEE',
-                          dialog: '#FFFFFF',
-                          fontFamily: 'Inter'
-                        }}
-                        className="!bg-background"
-                      />
                       <div className="text-xs text-gray-500 text-center mt-4">
                         * You are about to use the services of third party operators over which OKX has no control. 
                         OKX is not liable for any loss or other consequences, including the freezing / seizing of your assets.
