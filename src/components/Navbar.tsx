@@ -2,12 +2,18 @@
 import React, { useState } from 'react';
 import { Search, Plus, Wallet } from 'lucide-react';
 import { Button } from './ui/button';
+import { useNavigate } from 'react-router-dom';
 
 export default function Navbar() {
   const [isWalletConnected, setIsWalletConnected] = useState(false);
+  const navigate = useNavigate();
 
   const handleWalletConnect = () => {
     setIsWalletConnected(true);
+  };
+
+  const handleCreateAgent = () => {
+    navigate('/create-agent');
   };
 
   return (
@@ -51,7 +57,10 @@ export default function Navbar() {
                   <Wallet className="h-4 w-4" />
                   Connected
                 </Button>
-                <Button className="flex items-center gap-2 bg-primary text-white hover:bg-primary/90">
+                <Button 
+                  className="flex items-center gap-2 bg-primary text-white hover:bg-primary/90"
+                  onClick={handleCreateAgent}
+                >
                   <Plus className="h-4 w-4" />
                   Create New Agent
                 </Button>
