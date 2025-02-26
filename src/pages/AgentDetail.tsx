@@ -25,9 +25,9 @@ const AgentDetail = () => {
   const { symbol } = useParams();
   const [showTradeDialog, setShowTradeDialog] = useState(false);
   
-  // Create provider instance
+  // Create provider instance with proper type checking
   const provider = useMemo(() => {
-    if (typeof window.ethereum !== 'undefined') {
+    if (typeof window !== 'undefined' && window.ethereum) {
       return new ethers.providers.Web3Provider(window.ethereum);
     }
     return new ethers.providers.JsonRpcProvider('https://mainnet.infura.io/v3/your-infura-id');
