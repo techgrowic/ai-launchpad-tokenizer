@@ -1,6 +1,5 @@
-
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Upload } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -13,9 +12,14 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Label } from '@/components/ui/label';
+import { useToast } from '@/components/ui/use-toast';
 import Navbar from '@/components/Navbar';
+import { useAgents } from '@/contexts/AgentContext';
 
 const CreateAgent = () => {
+  const { toast } = useToast();
+  const navigate = useNavigate();
+  const { addAgent } = useAgents();
   const [formData, setFormData] = useState({
     name: '',
     ticker: '',
@@ -24,9 +28,45 @@ const CreateAgent = () => {
     profilePicture: null as File | null
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Form submitted:', formData);
+    
+    // Basic validation
+    if (!formData.name || !formData.ticker || !formData.description || !formData.type) {
+      toast({
+        title: "Error",
+        description: "Please fill in all required fields",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    // Create new agent
+    const symbol = formData.ticker.startsWith('$') ? formData.ticker : `$${formData.ticker}`;
+    
+    // If there's a profile picture, create a URL for it
+    let profilePictureUrl = undefined;
+    if (formData.profilePicture) {
+      profilePictureUrl = URL.createObjectURL(formData.profilePicture);
+    }
+
+    // Add the new agent
+    addAgent({
+      name: formData.name,
+      symbol: symbol,
+      description: formData.description,
+      type: formData.type,
+      profilePicture: profilePictureUrl
+    });
+
+    // Show success message
+    toast({
+      title: "Success",
+      description: "AI Agent created successfully!",
+    });
+
+    // Navigate back to the home page
+    navigate('/');
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {

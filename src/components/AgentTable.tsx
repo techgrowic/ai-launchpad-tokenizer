@@ -2,48 +2,13 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ChevronUp, ChevronDown } from 'lucide-react';
-
-interface Agent {
-  name: string;
-  symbol: string;
-  marketCap: string;
-  change24h: string;
-  holders: number;
-  volume24h: string;
-}
-
-const agents: Agent[] = [
-  {
-    name: 'G.A.M.E',
-    symbol: '$GAME',
-    marketCap: '$33.89m',
-    change24h: '2.01%',
-    holders: 266647,
-    volume24h: '$471.61k',
-  },
-  {
-    name: 'DataSense',
-    symbol: '$DATA',
-    marketCap: '$28.45m',
-    change24h: '-1.25%',
-    holders: 154320,
-    volume24h: '$892.15k',
-  },
-  {
-    name: 'Luna',
-    symbol: '$LUNA',
-    marketCap: '$15.39m',
-    change24h: '0.63%',
-    holders: 292200,
-    volume24h: '$379.96k',
-  },
-];
+import { useAgents } from '@/contexts/AgentContext';
 
 export default function AgentTable() {
   const navigate = useNavigate();
+  const { agents } = useAgents();
 
   const handleRowClick = (symbol: string) => {
-    // Remove the $ from symbol for the URL
     const cleanSymbol = symbol.replace('$', '');
     navigate(`/agent/${cleanSymbol}`);
   };
@@ -80,7 +45,15 @@ export default function AgentTable() {
               >
                 <td className="table-cell">
                   <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 bg-gray-200 rounded-full"></div>
+                    <div className="w-8 h-8 bg-gray-200 rounded-full">
+                      {agent.profilePicture && (
+                        <img 
+                          src={agent.profilePicture} 
+                          alt={agent.name}
+                          className="w-full h-full rounded-full object-cover"
+                        />
+                      )}
+                    </div>
                     <div>
                       <div className="font-medium">{agent.name}</div>
                       <div className="text-sm text-gray-500">{agent.symbol}</div>
